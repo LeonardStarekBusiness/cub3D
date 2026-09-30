@@ -10,15 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdbool.h>
-#define PI 3.14159265358979323846
-#define HALFPI 1.57079632679
-#define TWOPI 6.28318530718
-#define PIANDHALF 4.71238898038
-#define THREEHALFS 1.5F
-#define DEGTORAD 0.01745329251
-#define FASTMATH 1
+#ifndef COMPLEX_MATH_H
+# define COMPLEX_MATH_H
+# include <stdio.h>
+# include <stdbool.h>
+# define PI 3.14159265358979323846
+# define HALFPI 1.57079632679
+# define TWOPI 6.28318530718
+# define PIANDHALF 4.71238898038
+# define THREEHALFS 1.5F
+# define DEGTORAD 0.01745329251
+# define FASTMATH 1
 
 
 // The vector can be interpreted as a vector or complex number
@@ -76,3 +78,5 @@ double		ft_max(double a, double b);
 double		ft_clamp(double num, double min, double max);
 double		ft_floor(double num);
 double		ft_ceil(double num);
+
+#endif //COMPLEX_MATH_H
