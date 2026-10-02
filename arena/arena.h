@@ -1,24 +1,23 @@
-//#include "../libft/libft.h"
-//Replace these with libft functions later
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
+#include "../libft/libft.h"
+#ifndef INIT_SIZE
+# define INIT_SIZE 131072
+#endif
+#ifndef ADD_SIZE
+# define ADD_SIZE 65536
+#endif
+#ifndef MAX_SIZE
+# define MAX_SIZE 16777216
+#endif
+
 
 typedef struct	s_arena
 {
 	void		*memory;
-	void		*ptr;
+	size_t		inc;
+	void		**add_blocks;
 }				t_arena;
 
-typedef struct	s_gaps
-{
-	void		*addr[16];
-	size_t		size[16];
-	unsigned char	last;
-}				t_gaps;
-
-
-void	*arena_malloc(size_t n);
 void	arena_init();
-void	arena_destroy();
+void	*arena_malloc(size_t n);
 void	exception(char *msg);
+void	arena_destroy();

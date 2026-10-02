@@ -1,5 +1,5 @@
 NAME = cub3D
-LIBNAME = libft/libft.a datastructures/datastructures.a math/complex_math.a
+LIBNAME = libft/libft.a datastructures/datastructures.a math/complex_math.a arena/arena.a
 
 CFLAGGEN = -Wall -Wextra -Werror -g
 
@@ -14,12 +14,13 @@ all: $(NAME)
 %.o: %.c
 	$(CC) $(CFLAGGEN) -c $< -o $@
 
-libft/libft.a:
+libs:
 	cd libft && make
 	cd math && make
 	cd datastructures && make
+	cd arena && make
 
-$(NAME): $(OBJEKT_DATEIEN) libft/libft.a
+$(NAME): $(OBJEKT_DATEIEN) libs
 	$(CC) $(CFLAGGEN) $(OBJEKT_DATEIEN) $(LIBNAME) -o $(NAME)
 
 clean: 
@@ -28,6 +29,7 @@ clean:
 	cd libft && make clean
 	cd math && make clean
 	cd datastructures && make clean
+	cd arena && make clean
 
 fclean: clean 
 	rm -f $(NAME)

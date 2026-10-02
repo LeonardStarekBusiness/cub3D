@@ -2,6 +2,9 @@
 
 int main()
 {
+	//ARENA
+	arena_init();
+
 	//MATH
 	u_vec2 vector = {{1,0}};
 	vector.complex = c_rotate(vector.complex, 45);
@@ -30,4 +33,18 @@ int main()
 	printf("11: %s\n", (char *)hash_get(tisch, 11));
 	printf("22: %s\n", (char *)hash_get(tisch, 22));
 	delete_hashtable(tisch);
+
+	//MORE ARENA
+	char *str = arena_malloc(25);
+	char *str2 = arena_malloc(14);
+	char *str3 = arena_malloc(14);
+	char *str4 = arena_malloc(14);
+	char *str5 = arena_malloc(14);
+	char *str6 = arena_malloc(14);
+	(void)str3;(void)str4;(void)str5;(void)str6;
+	ft_memcpy(str, "this is not a test", 19);
+	printf("arena: %s\n", str);
+	ft_memcpy(str2, "neither is this!", 17);
+	printf("%s, %s\n", str, str2);
+	arena_destroy();
 }

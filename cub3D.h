@@ -13,3 +13,4 @@
 #include "datastructures/datastructures.h"
 #include "libft/libft.h"
 #include "math/complex_math.h"
+#include "arena/arena.h"
