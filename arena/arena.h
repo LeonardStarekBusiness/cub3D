@@ -17,7 +17,15 @@ typedef struct	s_arena
 	void		**add_blocks;
 }				t_arena;
 
-void	arena_init();
+typedef struct	s_block
+{
+	size_t		size;
+	void		*next;
+	void		*prev;
+}				t_block;
+
+void	arena_init(void);
 void	*arena_malloc(size_t n);
 void	exception(char *msg);
-void	arena_destroy();
+void	*arena_destroy(void);
+void	arena_free(void *ptr);

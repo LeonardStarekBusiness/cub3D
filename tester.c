@@ -35,16 +35,14 @@ int main()
 	delete_hashtable(tisch);
 
 	//MORE ARENA
-	char *str = arena_malloc(25);
-	char *str2 = arena_malloc(14);
-	char *str3 = arena_malloc(14);
-	char *str4 = arena_malloc(14);
-	char *str5 = arena_malloc(14);
-	char *str6 = arena_malloc(14);
-	(void)str3;(void)str4;(void)str5;(void)str6;
+	char *str = arena_malloc(131037);
+	char *str2 = arena_malloc(10);
+	char *str3 = arena_malloc(19);
 	ft_memcpy(str, "this is not a test", 19);
 	printf("arena: %s\n", str);
-	ft_memcpy(str2, "neither is this!", 17);
-	printf("%s, %s\n", str, str2);
+	ft_memcpy(str2, "abcde", 6);
+	ft_memcpy(str3, "are you out of y", 18);
+	printf("%s, %s, %s\n", str, str2, str3);
+	arena_free(str2);
 	arena_destroy();
 }
