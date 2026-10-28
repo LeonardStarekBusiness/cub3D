@@ -4,7 +4,7 @@ int main()
 {
 	//ARENA
 	arena_init();
-
+/*
 	//MATH
 	u_vec2 vector = {{1,0}};
 	vector.complex = c_rotate(vector.complex, 45);
@@ -34,15 +34,26 @@ int main()
 	printf("22: %s\n", (char *)hash_get(tisch, 22));
 	delete_hashtable(tisch);
 
+*/
 	//MORE ARENA
-	char *str = arena_malloc(131037);
-	char *str2 = arena_malloc(10);
-	char *str3 = arena_malloc(19);
+	char *str = arena_malloc(50);
+	char *str2 = arena_malloc(50);
 	ft_memcpy(str, "this is not a test", 19);
 	printf("arena: %s\n", str);
 	ft_memcpy(str2, "abcde", 6);
-	ft_memcpy(str3, "are you out of y", 18);
-	printf("%s, %s, %s\n", str, str2, str3);
+	printf("str2: %s, addr: %lu\n", str2, (size_t)(void*)str2);
 	arena_free(str2);
+	char *str3 = arena_malloc(40);
+	ft_memcpy(str3, "are you out of y", 18);
+	printf("str: (%s,%lu)  str3: (%s,%lu)\n", str,(size_t)(void*)str,
+		 str3,(size_t)(void*)str3);
+	arena_free(str2);
+	for (int i = 0; i < 20; i++)
+	{
+		void *baal = arena_malloc(1000);
+		printf("ptr: %zu\n", (size_t)baal);
+		if (i%2)
+			arena_free(baal);
+	}
 	arena_destroy();
 }

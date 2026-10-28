@@ -18,8 +18,24 @@ void	arena_free(void *ptr)
 		write(2, "Invalid pointer!", 16);
 	else
 	{
-		((t_block *)block->prev)->next = block->next;
+		block->freed = 1;
 	}
+}
+
+
+void	*first_fit(t_arena *arena, size_t n)
+{
+	if (!arena->inc)
+		return (NULL);
+	t_block	*block = (void *)arena->memory;
+	for (; block->next; block = block->next)
+	{
+		if (block->freed && block->size >= n)
+		{
+			return (block);
+		}
+	}
+	return (NULL);
 }
 
 //Shall be called after arena_init().
@@ -55,10 +71,10 @@ void	*arena_malloc(size_t n)
 	else if ((n + sizeof(t_block)) > INIT_SIZE)
 		exception("block too big!");
 	if (arena->inc > MAX_SIZE)
-	{
 		exception("out of memory!");
-		return (NULL);
-	}
+	void *tmp_addr = first_fit(arena, n);
+	if (tmp_addr)
+		block_addr = tmp_addr;
 	else if ((arena->inc + n + sizeof(t_block)) < INIT_SIZE)
 	{
 		block_addr = arena->memory + arena->inc;
@@ -69,17 +85,25 @@ void	*arena_malloc(size_t n)
 		size_t block = (i / ADD_SIZE);
 		block_addr = (arena->add_blocks)[block] + (i % ADD_SIZE);
 	}
-	mem_block.size = n;
+	if (!tmp_addr) //fresh block
+	{
+		mem_block.size = n;
+		mem_block.freed = 0;
+		mem_block.next = block_addr + sizeof(t_block) + n;
+		if ((mem_block.next + sizeof(t_block)) >= (arena->memory + INIT_SIZE))
+			mem_block.next = NULL; 
+		mem_block.prev = prev_addr;
+		prev_addr = block_addr;
+		if (mem_block.next)
+			((t_block *)(mem_block.next))->next = NULL;
+		ft_memcpy(block_addr, &mem_block, sizeof(mem_block));
+		arena->inc += sizeof(t_block) + n;
+	}
+	else //reusing block
+	{
+		((t_block *)tmp_addr)->freed = 0;
+	}
 	r_addr = block_addr + sizeof(t_block);
-	mem_block.next = block_addr + sizeof(t_block) + n;
-	if ((mem_block.next + sizeof(t_block)) >= (arena->memory + INIT_SIZE))
-		mem_block.next = NULL; 
-	mem_block.prev = prev_addr;
-	prev_addr = block_addr;
-	if (mem_block.next)
-		((t_block *)(mem_block.next))->next = NULL;
-	ft_memcpy(block_addr, &mem_block, sizeof(mem_block));
-	arena->inc += sizeof(t_block) + n;
 	return (r_addr);
 }
 
@@ -117,7 +141,7 @@ void	arena_init()
 	arena_free(NULL);
 }
 
-void	exception(char *msg)
+_Noreturn void	exception(char *msg)
 {
 	arena_destroy();
 	write(2, msg, ft_strlen(msg));

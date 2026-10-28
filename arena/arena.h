@@ -21,6 +21,7 @@ typedef struct	s_block
 {
 	size_t		size;
 	void		*next;
+	_Bool		freed;
 	void		*prev;
 }				t_block;
 
