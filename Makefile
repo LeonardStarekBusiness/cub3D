@@ -5,7 +5,7 @@ CFLAGGEN = -Wall -Wextra -Werror -g
 
 CC = cc
 
-QUELLE_DATEIEN = tester.c
+QUELLE_DATEIEN = main.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

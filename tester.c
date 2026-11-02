@@ -36,7 +36,7 @@ int main()
 
 */
 	//MORE ARENA
-	char *str = arena_malloc(50);
+	char *str = arena_malloc(INIT_SIZE - 50);
 	char *str2 = arena_malloc(50);
 	ft_memcpy(str, "this is not a test", 19);
 	printf("arena: %s\n", str);
@@ -48,9 +48,9 @@ int main()
 	printf("str: (%s,%lu)  str3: (%s,%lu)\n", str,(size_t)(void*)str,
 		 str3,(size_t)(void*)str3);
 	arena_free(str2);
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 2000; i++)
 	{
-		void *baal = arena_malloc(1000);
+		void *baal = arena_malloc(10000);
 		printf("ptr: %zu\n", (size_t)baal);
 		if (i%2)
 			arena_free(baal);

@@ -27,6 +27,6 @@ typedef struct	s_block
 
 void	arena_init(void);
 void	*arena_malloc(size_t n);
-void	exception(char *msg);
+void	terminate(char *msg);
 void	*arena_destroy(void);
 void	arena_free(void *ptr);

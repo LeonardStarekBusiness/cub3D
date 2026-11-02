@@ -1,6 +1,4 @@
 #include "arena.h"
-#include <stdio.h>
-
 void	arena_free(void *ptr)
 {
 	static _Bool	initialised;
@@ -13,27 +11,27 @@ void	arena_free(void *ptr)
 		initialised = 1;
 		return ;
 	}
+	if (!ptr)
+		return ;
 	block = ptr - sizeof(t_block);
 	if (block->size < 0 || (block->prev < arena->memory && block->prev))
 		write(2, "Invalid pointer!", 16);
 	else
-	{
 		block->freed = 1;
-	}
 }
 
 
-void	*first_fit(t_arena *arena, size_t n)
+void	*first_fit(t_arena *arena, size_t blocks_added, size_t n)
 {
-	if (!arena->inc)
+	if (!arena->inc || !((arena->inc - INIT_SIZE) % ADD_SIZE)) //beginning of block
 		return (NULL);
 	t_block	*block = (void *)arena->memory;
+	if (blocks_added > 0)
+		block = (void *)(arena->add_blocks[blocks_added - 1]);
 	for (; block->next; block = block->next)
 	{
 		if (block->freed && block->size >= n)
-		{
 			return (block);
-		}
 	}
 	return (NULL);
 }
@@ -61,32 +59,40 @@ void	*arena_malloc(size_t n)
 		initialised = 1;
 		return (arena);
 	}
+	if (n < 1)
+		return (NULL);
+
+	void *tmp_addr = first_fit(arena, blocks_added, n);
 	if ((arena->inc + n + sizeof(t_block)) > (INIT_SIZE + (blocks_added * ADD_SIZE)))
 	{
 		if ((n + sizeof(t_block)) > ADD_SIZE)
-			exception("block too big!");
+			return (NULL); //block too big
 		arena->add_blocks[blocks_added] = malloc(ADD_SIZE);
 		blocks_added++;
+		arena->inc = INIT_SIZE + (ADD_SIZE * blocks_added);
 	}
 	else if ((n + sizeof(t_block)) > INIT_SIZE)
-		exception("block too big!");
+		return (NULL); //block too big
 	if (arena->inc > MAX_SIZE)
-		exception("out of memory!");
-	void *tmp_addr = first_fit(arena, n);
-	if (tmp_addr)
+		terminate("out of memory!");
+
+	if (tmp_addr) //reusing block
+	{
 		block_addr = tmp_addr;
-	else if ((arena->inc + n + sizeof(t_block)) < INIT_SIZE)
-	{
-		block_addr = arena->memory + arena->inc;
+		((t_block *)tmp_addr)->freed = 0;
 	}
-	else
+	else //fresh block
 	{
-		size_t i = (arena->inc + n + sizeof(t_block)) - INIT_SIZE;
-		size_t block = (i / ADD_SIZE);
-		block_addr = (arena->add_blocks)[block] + (i % ADD_SIZE);
-	}
-	if (!tmp_addr) //fresh block
-	{
+		if ((arena->inc + n + sizeof(t_block)) < INIT_SIZE)
+		{
+			block_addr = arena->memory + arena->inc;
+		}
+		else
+		{
+			size_t i = (arena->inc) - INIT_SIZE;
+			size_t block = (i / ADD_SIZE) - 1;
+			block_addr = (arena->add_blocks)[block] + (i % ADD_SIZE);
+		}
 		mem_block.size = n;
 		mem_block.freed = 0;
 		mem_block.next = block_addr + sizeof(t_block) + n;
@@ -98,10 +104,6 @@ void	*arena_malloc(size_t n)
 			((t_block *)(mem_block.next))->next = NULL;
 		ft_memcpy(block_addr, &mem_block, sizeof(mem_block));
 		arena->inc += sizeof(t_block) + n;
-	}
-	else //reusing block
-	{
-		((t_block *)tmp_addr)->freed = 0;
 	}
 	r_addr = block_addr + sizeof(t_block);
 	return (r_addr);
@@ -141,7 +143,7 @@ void	arena_init()
 	arena_free(NULL);
 }
 
-_Noreturn void	exception(char *msg)
+_Noreturn void	terminate(char *msg)
 {
 	arena_destroy();
 	write(2, msg, ft_strlen(msg));

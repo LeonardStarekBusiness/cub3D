@@ -6,7 +6,7 @@ ARFLAGGEN = rcs
 CC = cc
 AR = ar
 
-QUELLE_DATEIEN = arena.c ../libft/ft_strlen.c ../libft/ft_calloc.c
+QUELLE_DATEIEN = arena.c ../libft/ft_strlen.c ../libft/ft_calloc.c ../libft/ft_memcpy.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 
